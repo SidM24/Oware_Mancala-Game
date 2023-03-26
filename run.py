@@ -365,24 +365,6 @@ def two_player_game_loop():
                         print("You can't Play at this position. Choose another position")
                         error_message(2, turn)
                         continue
-                    # if event.unicode == 's' and obj.mancala[12] == 0:
-                    #     print("You can't Play at this position. Choose another position")
-                    #     continue
-                    # if event.unicode == 'd' and obj.mancala[11] == 0:
-                    #     print("You can't Play at this position. Choose another position")
-                    #     continue
-                    # if event.unicode == 'f' and obj.mancala[10] == 0:
-                    #     print("You can't Play at this position. Choose another position")
-                    #     continue
-                    # if event.unicode == 'g' and obj.mancala[9] == 0:
-                    #     print("You can't Play at this position. Choose another position")
-                    #     continue
-                    # if event.unicode == 'h' and obj.mancala[8] == 0:
-                    #     print("You can't Play at this position. Choose another position")
-                    #     continue
-                    # if event.unicode == 'j' and obj.mancala[7] == 0:
-                    #     print("You can't Play at this position. Choose another position")
-                    #     continue
 
                     turn_flag = obj.player_move(int(player2_dict[event.unicode]))
                     obj.print_mancala()
