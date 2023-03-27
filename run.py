@@ -39,10 +39,10 @@ def open_game_window():
 
 
 # To draw a button on the screen
-def draw_button(button_x, button_y, button_width, button_height, button_color, button_text, text_color, font_size=40):
+def draw_button(button_x, button_y, button_width, button_height, button_color, button_text, text_color, font_size=40, bord_rad=15):
     font = pygame.font.SysFont(None, font_size)
     button_rect = pygame.draw.rect(gameWindow, button_color, (button_x, button_y, button_width, button_height),
-                                   border_radius=15)
+                                   border_radius=bord_rad)
     button_text_surface = font.render(button_text, True, text_color)
     button_text_x = button_x + button_width // 2 - button_text_surface.get_width() // 2
     button_text_y = button_y + button_height // 2 - button_text_surface.get_height() // 2
@@ -71,7 +71,7 @@ def user_choice():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 flag = False
-                break
+                sys.exit(0)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 if single_player_rect.collidepoint(mouse_pos):
@@ -85,10 +85,38 @@ def user_choice():
 
 
 # Function to play the single player game
+def select_difficulty():
+    gameWindow.fill(background)
+    blit(55, light_blue, "Select Difficulty", 450, 175)
+    # pygame.draw.rect(gameWindow, black, (250, 250, 400, 30), border_radius=30)
+    # for i in range(1,6):
+    #     blit(30, white, str(i), 290+(i-1)*80, 265)
+    esy_button = draw_button(80, 250, 180, 50, black, "Easy", white, 40, 15)
+    med_button = draw_button(360, 250, 180, 50, black, "Medium", white, 40, 15)
+    hard_button = draw_button(640, 250, 180, 50, black, "Hard", white, 40, 15)
+    pygame.display.update()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                flag = False
+                sys.exit(0)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if esy_button.collidepoint(mouse_pos):
+                    print("Esy Mode")
+                    return 3
+                elif med_button.collidepoint(mouse_pos):
+                    print("Med Mode")
+                    return 6
+                elif hard_button.collidepoint(mouse_pos):
+                    return 10
+
+
 def single_player_game():
+    difficulty = select_difficulty()
     draw_board_again()
     start(1)
-    single_game_loop()
+    single_game_loop(difficulty)
 
 
 # Function to play the multiplayer game
@@ -234,7 +262,7 @@ def error_message(game, turn_here):
 
 
 # Main game loop for single player
-def single_game_loop():
+def single_game_loop(difficulty=6):
     global exit_game
     global turn
     home_button, restart_button = draw_board(obj.mancala, 1, turn)
@@ -280,7 +308,7 @@ def single_game_loop():
                 turn = -1
                 exit_game = True
                 break
-            heurisitic, k = gamemodule.alphabeta(obj, 10, -100000, 100000, True)
+            heurisitic, k = gamemodule.alphabeta(obj, difficulty, -100000, 100000, True)
             print("AI-BOT TURN >>> ", end="")
             print(k)
             turn_flag = obj.player_move(k)
