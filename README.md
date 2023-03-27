@@ -16,6 +16,8 @@ The objective of the game is to capture as many seeds as possible from the oppon
  The game ends when a player has captured all the seeds on their opponent's side of the board, and the player with the most seeds in their score pit at the end of the game wins.
 
  # How to play 
- To play the game run the run.py file in termina and enjoy the game !!!!
+ To play the game run the run.py file in terminal or run the run.exe file in the dist folder. 
+ 
+ Enjoy the Game !!!!
 
  
