@@ -23,6 +23,7 @@ width = 300
 turn = -1
 obj = gamemodule.Mancala_Board(None)
 gameWindow = pygame.display.set_mode((900, 500))
+page_counter = 1
 
 # To quit and close the game
 exit_game = False
@@ -39,7 +40,8 @@ def open_game_window():
 
 
 # To draw a button on the screen
-def draw_button(button_x, button_y, button_width, button_height, button_color, button_text, text_color, font_size=40, bord_rad=15):
+def draw_button(button_x, button_y, button_width, button_height, button_color, button_text, text_color, font_size=40,
+                bord_rad=15):
     font = pygame.font.SysFont(None, font_size)
     button_rect = pygame.draw.rect(gameWindow, button_color, (button_x, button_y, button_width, button_height),
                                    border_radius=bord_rad)
@@ -48,6 +50,284 @@ def draw_button(button_x, button_y, button_width, button_height, button_color, b
     button_text_y = button_y + button_height // 2 - button_text_surface.get_height() // 2
     gameWindow.blit(button_text_surface, (button_text_x, button_text_y))
     return button_rect
+
+
+def pages():
+    global page_counter
+    gameWindow.fill(background)
+    draw_board_again()
+    prev_button = None
+    next_button = None
+    home_button = draw_button(30, 25, 100, 40, black, "Home", "white", 30)
+    if page_counter == 1:
+        blit(40, green, "This is the basic Mancala Game Board", 450, 250)
+        pygame.draw.rect(gameWindow, background, (325, 420, 250, 60))
+        pygame.draw.rect(gameWindow, background, (325, 20, 250, 60))
+    elif page_counter == 2:
+        draw_board([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0], 2)
+        blit(30, green, "There are 6 small pots on both sides containing 4 stones each", 450, 250)
+    elif page_counter == 3:
+        pygame.draw.rect(gameWindow, green, pygame.Rect(160, 290, 580, 80), 2)
+        pygame.draw.rect(gameWindow, background, (325, 420, 250, 60))
+        pygame.draw.rect(gameWindow, background, (325, 20, 250, 60))
+        blit(40, green, "This is your side", 450, 250)
+    elif page_counter == 4:
+        pygame.draw.rect(gameWindow, background, (325, 420, 250, 60))
+        pygame.draw.rect(gameWindow, background, (325, 20, 250, 60))
+        pygame.draw.rect(gameWindow, red, pygame.Rect(160, 140, 580, 80), 2)
+        blit(40, red, "Opponent will play from this side", 450, 250)
+    elif page_counter == 5:
+        draw_board([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0], 2)
+        pygame.draw.rect(gameWindow, green, pygame.Rect(760, 170, 80, 170), 2)
+        blit(30, green, "This pot shows the number of stones captured by you", 450, 250)
+    elif page_counter == 6:
+        draw_board([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0], 2)
+        pygame.draw.rect(gameWindow, red, pygame.Rect(60, 170, 80, 170), 2)
+        blit(30, red, "This pot shows the number of stones captured by opponent", 450, 250)
+    elif page_counter == 7:
+        draw_board([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0], 2)
+        blit(30, green, "Stones are distributed in anticlockwise manner", 450, 250)
+    elif page_counter == 8:
+        draw_board([0, 0, 0, 0, 0, 0, 26, 5, 0, 1, 2, 3, 1, 10], 2)
+        pygame.draw.rect(gameWindow, green, pygame.Rect(760, 170, 80, 170), 2)
+        blit(30, green, "Capture More stones than opponent in your pit", 450, 250)
+    elif page_counter == 9:
+        gameWindow.fill(background)
+        pygame.draw.rect(gameWindow, black, (x_coordinate, y_coordinate, length, width), border_radius=15)
+        blit(50, white, "Lets learn some basic game moves", 450, 250)
+    elif page_counter == 10:
+        obj.mancala = [0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        draw_board(obj.mancala, 2)
+        blit(30, green, "Press the number corresponding to the dish, ", 450, 235)
+        blit(30, green, "they get evenly distributed in dishes to their right ", 450, 265)
+        prev_button = draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+        next_button = draw_button(770, 425, 100, 40, black, "->", "white", 30)
+        pygame.display.update()
+        flag = True
+        while flag:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if home_button.collidepoint(mouse_pos):
+                        print("Home Button")
+                        user_choice()
+                    if next_button.collidepoint(mouse_pos):
+                        page_counter = page_counter + 1
+                        if page_counter == 13:
+                            pages()
+                            print("End of Pages")
+                        else:
+                            print("This is page " + str(page_counter))
+                            pages()
+                    elif page_counter != 1 and prev_button.collidepoint(mouse_pos):
+                        page_counter = page_counter - 1
+                        print("Prev Page is page " + str(page_counter))
+                        pages()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT:
+                        page_counter = page_counter + 1
+                        if page_counter == 13:
+                            pages()
+                            print("End of Pages")
+                        else:
+                            print("This is page " + str(page_counter))
+                            pages()
+                    elif event.key == pygame.K_LEFT:
+                        page_counter = page_counter - 1
+                        print("Prev Page is page " + str(page_counter))
+                        pages()
+                    elif event.unicode != '4':
+                        print("You can't Play at this position. Choose another position")
+                        error_message(1, 1, True)
+                        continue
+                    else:
+                        turn_flag = obj.player_move(int(event.unicode) - 1)
+                        draw_board(obj.mancala, 1, 1)
+                        pygame.display.update()
+                        flag = False
+    elif page_counter == 11:
+        obj.mancala = [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        draw_board(obj.mancala, 2)
+        blit(30, green, "If last stone falls in your scoring pit you will get a free turn", 450, 250)
+        prev_button = draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+        next_button = draw_button(770, 425, 100, 40, black, "->", "white", 30)
+        pygame.display.update()
+        flag = True
+        free_turn = False
+        while flag:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if home_button.collidepoint(mouse_pos):
+                        print("Home Button")
+                        user_choice()
+                    if next_button.collidepoint(mouse_pos):
+                        page_counter = page_counter + 1
+                        if page_counter == 13:
+                            pages()
+                            print("End of Pages")
+                        else:
+                            print("This is page " + str(page_counter))
+                            pages()
+                    elif page_counter != 1 and prev_button.collidepoint(mouse_pos):
+                        page_counter = page_counter - 1
+                        print("Prev Page is page " + str(page_counter))
+                        pages()
+                if free_turn is False and event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT:
+                        page_counter = page_counter + 1
+                        if page_counter == 13:
+                            pages()
+                            print("End of Pages")
+                        else:
+                            print("This is page " + str(page_counter))
+                            pages()
+                    elif event.key == pygame.K_LEFT:
+                        page_counter = page_counter - 1
+                        print("Prev Page is page " + str(page_counter))
+                        pages()
+                    elif event.unicode != '3' and free_turn is False:
+                        print("You can't Play at this position. Choose another position")
+                        error_message(1, 1, True, True)
+                        continue
+                    else:
+                        if not free_turn:
+                            turn_flag = obj.player_move(int(event.unicode) - 1)
+                            draw_board(obj.mancala, 1, 1)
+                            draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+                            draw_button(770, 425, 100, 40, black, "->", "white", 30)
+                            blit(40, green, "You Got a Free Turn", 450, 250)
+                            flag = False
+                            free_turn = True
+                            pygame.display.update()
+                            pygame.time.delay(800)
+                            pages()
+                        else:
+                            flag = False
+    elif page_counter == 12:
+        obj.mancala = [0, 0, 1, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0]
+        draw_board(obj.mancala, 2)
+        blit(30, green, "If last stone falls in your empty dish, you will get that stone", 450, 235)
+        blit(30, green, "and the stones in the dish directly opposite", 450, 265)
+        prev_button = draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+        next_button = draw_button(770, 425, 100, 40, black, "->", "white", 30)
+        pygame.display.update()
+        flag = True
+        captured = False
+        while flag:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if home_button.collidepoint(mouse_pos):
+                        print("Home Button")
+                        user_choice()
+                    if next_button.collidepoint(mouse_pos):
+                        page_counter = page_counter + 1
+                        if page_counter == 13:
+                            pages()
+                            print("End of Pages")
+                        else:
+                            print("This is page " + str(page_counter))
+                            pages()
+                    elif page_counter != 1 and prev_button.collidepoint(mouse_pos):
+                        page_counter = page_counter - 1
+                        print("Prev Page is page " + str(page_counter))
+                        pages()
+                if captured is False and event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT:
+                        page_counter = page_counter + 1
+                        if page_counter == 13:
+                            pages()
+                            print("End of Pages")
+                        else:
+                            print("This is page " + str(page_counter))
+                            pages()
+                    elif event.key == pygame.K_LEFT:
+                        page_counter = page_counter - 1
+                        print("Prev Page is page " + str(page_counter))
+                        pages()
+                    elif event.unicode != '3' and captured is False:
+                        print("You can't Play at this position. Choose another position")
+                        error_message(1, 1, True, False, True)
+                        continue
+                    else:
+                        if not captured:
+                            turn_flag = obj.player_move(int(event.unicode) - 1)
+                            draw_board(obj.mancala, 1, 1)
+                            draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+                            draw_button(770, 425, 100, 40, black, "->", "white", 30)
+                            blit(40, red, "Captured", 450, 250)
+                            captured = True
+                            flag = False
+                            pygame.display.update()
+                            pygame.time.delay(800)
+                            pages()
+                        else:
+                            flag = False
+    elif page_counter == 13:
+        pygame.draw.rect(gameWindow, black, (x_coordinate, y_coordinate, length, width), border_radius=15)
+        pygame.draw.rect(gameWindow, background, (325, 420, 250, 60))
+        pygame.draw.rect(gameWindow, background, (325, 20, 250, 60))
+        blit(38, blue, "Congratulations!! You have learned Mancala", 450, 210)
+        blit(38, green, "Happy Playing", 450, 265)
+    elif page_counter == 14:
+        user_choice()
+
+    if page_counter != 1:
+        prev_button = draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+    if page_counter < 13:
+        next_button = draw_button(770, 425, 100, 40, black, "->", "white", 30)
+    pygame.display.update()
+    prev_button = draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+    next_button = draw_button(770, 425, 100, 40, black, "->", "white", 30)
+    return prev_button, next_button, home_button
+
+
+def how_to_play():
+    global page_counter
+    page_counter = 1
+    prev_button, next_button, home_button = pages()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                flag = False
+                sys.exit(0)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    page_counter = page_counter + 1
+                    if page_counter == 13:
+                        pages()
+                        print("End of Pages")
+                    else:
+                        print("This is page " + str(page_counter))
+                        pages()
+                if event.key == pygame.K_LEFT:
+                    page_counter = page_counter - 1
+                    print("Prev Page is page " + str(page_counter))
+                    pages()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if next_button.collidepoint(mouse_pos):
+                    page_counter = page_counter + 1
+                    if page_counter == 13:
+                        pages()
+                        print("End of Pages")
+                    else:
+                        print("This is page " + str(page_counter))
+                        pages()
+                elif page_counter != 1 and prev_button.collidepoint(mouse_pos):
+                    page_counter = page_counter - 1
+                    print("Prev Page is page " + str(page_counter))
+                    pages()
+                elif home_button.collidepoint(mouse_pos):
+                    print("Home")
+                    user_choice()
 
 
 # Design of Display of the home screen
@@ -59,13 +339,14 @@ def choice_display():
     blit(50, white, "Select Game Mode", 450, 200)
     single_player_rect = draw_button(100, 275, 250, 50, black, "Player vs CPU", white)
     two_player_rect = draw_button(550, 275, 250, 50, black, "Player vs Player", white)
+    how_to_play_button = draw_button(325, 350, 250, 50, black, "How to Play", red)
     pygame.display.update()
-    return single_player_rect, two_player_rect
+    return single_player_rect, two_player_rect, how_to_play_button
 
 
 # Function to get the user choice of gameplay
 def user_choice():
-    single_player_rect, two_player_rect = choice_display()
+    single_player_rect, two_player_rect, how_to_play_button = choice_display()
     flag = True
     while flag:
         for event in pygame.event.get():
@@ -80,6 +361,9 @@ def user_choice():
                 elif two_player_rect.collidepoint(mouse_pos):
                     print("Player vs Player")
                     two_player_game()
+                elif how_to_play_button.collidepoint(mouse_pos):
+                    print("How to Play Clicked")
+                    how_to_play()
 
         pygame.display.update()
 
@@ -253,12 +537,33 @@ def check_the_final_action(s, game):
                     user_choice()
 
 
-def error_message(game, turn_here):
-    blit(40, red, "Invalid Move", 450, 250)
-    pygame.display.update()
-    pygame.time.delay(400)
-    draw_board(obj.mancala, game, turn_here)
-    pygame.display.update()
+def error_message(game, turn_here, how_to_play_var=False, free_turn_htp=False, capture_htp=False):
+    if how_to_play_var:
+        draw_board(obj.mancala, 2, 1)
+        blit(40, red, "Invalid Move", 450, 250)
+        draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+        draw_button(770, 425, 100, 40, black, "->", "white", 30)
+        pygame.display.update()
+        pygame.time.delay(400)
+        draw_board(obj.mancala, 2, 1)
+        if not free_turn_htp:
+            blit(30, green, "Press the number corresponding to the dish, ", 450, 235)
+            blit(30, green, "they get evenly distributed in dishes to their right ", 450, 265)
+        elif capture_htp is True:
+            blit(30, green, "If last stone falls in your empty dish, you will get that stone", 450, 235)
+            blit(30, green, "and the stones in the dish directly opposite", 450, 265)
+        else:
+            blit(30, green, "If last stone falls in your scoring pit you will get a free turn", 450, 250)
+
+        draw_button(30, 425, 100, 40, black, "<-", "white", 30)
+        draw_button(770, 425, 100, 40, black, "->", "white", 30)
+        pygame.display.update()
+    else:
+        blit(40, red, "Invalid Move", 450, 250)
+        pygame.display.update()
+        pygame.time.delay(400)
+        draw_board(obj.mancala, game, turn_here)
+        pygame.display.update()
 
 
 # Main game loop for single player
