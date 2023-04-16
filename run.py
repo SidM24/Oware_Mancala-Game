@@ -334,7 +334,7 @@ def how_to_play():
 def choice_display():
     gameWindow.fill(background)
     blit(50, black, "Welcome to Oware Mancala !!!", 450, 75, 'didot.ttc')
-    blit(35, blue, "Created by Chhichhore", 450, 120)
+    blit(35, blue, "Test Your Brains!!", 450, 120)
     pygame.draw.rect(gameWindow, light_blue, (200, 175, 500, 50), border_radius=15)
     blit(50, white, "Select Game Mode", 450, 200)
     single_player_rect = draw_button(100, 275, 250, 50, black, "Player vs CPU", white)
@@ -364,7 +364,6 @@ def user_choice():
                 elif how_to_play_button.collidepoint(mouse_pos):
                     print("How to Play Clicked")
                     how_to_play()
-
         pygame.display.update()
 
 
