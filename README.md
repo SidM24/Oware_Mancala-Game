@@ -1,5 +1,7 @@
 # Oware_Mancala-Game
 
+![Oware Mancala](./OwareHeading.jpg)
+
 A simple game inspired by the ancient game Mancala made with the help of pygame
 
 # Description
